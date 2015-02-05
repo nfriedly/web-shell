@@ -1,6 +1,6 @@
 {
   "name": "web-shell",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "web-accessible terminal client for debugging environments that don't support SSH (such as bluemix). No security whatsoever.",
   "main": "web-shell.js",
   "scripts": {

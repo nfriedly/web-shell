@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+    <title>Web Shell</title>
+    <style type="text/css">
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding-bottom: 20px;
+        }
+        body, input {
+            font-family: "Consolas", "Menlo", "Courier", monospace;
+            font-size: 14px;
+        }
+        #output {
+            list-style-type: none;
+            padding: 0;
+            margin: 10px;
+        }
+        #output li {
+            white-space: pre;
+        }
+        .stderr {
+            color: #550000;
+        }
+        .stdin {
+            position: relative;
+            padding: 6px 0 6px 10px;
+        }
+        .stdin:before {
+            content: "»";
+            position: absolute;
+            left: 0px;
+        }
+        .input-wrapper {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .input-wrapper:before {
+            content: "»";
+            position: absolute;
+            left: 8px;
+            top: 2px;
+        }
+        #input {
+            width: 100%;
+            padding-left: 20px;
+        }
+        #kill {
+            position: fixed;
+            z-index: 1;
+            right: 8px;
+            bottom: 8px;
+        }
+    </style>
+    <script src='//code.jquery.com/jquery-1.7.2.min.js'></script>
+    <script src='//localhost:3000/socket.io/socket.io.js'></script>
+    <script>
+        $(function() {
+            
+            var $output = $('#output');
+
+            var socket = io.connect('//localhost:3000');
+
+            ['stdin','stdout','stderr'].forEach(function(type) {
+                socket.on(type, function(data) {
+                    console.log(type, data);
+                    var line = data.line;
+                    $output.append('<li class="' + type + '">'+ line + '</li>');
+                    scrollTo(0,document.body.scrollHeight);
+                })
+            });
+
+            socket.on('error', console.error);
+            
+            var $input = $('#input');
+            $input.keypress(function(e) {
+                // [enter]
+                if(e.keyCode === 13){
+                    var cmd = $input.val();
+                    $input.val('');
+                    socket.emit('stdin', {line: cmd} );
+                }
+            });
+
+            $('#kill').click(function() {
+                socket.emit('kill', {});
+            })
+        });
+
+
+        /*
+
+         */
+    </script>
+</head>
+<body>
+<ul id='output'></ul>
+<div class="input-wrapper">
+    <input id="input" autofocus="autofocus" />
+    <button id="kill">Kill Current Process</button>
+</div>
+</body>
+</html>

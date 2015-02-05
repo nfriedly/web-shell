@@ -17,5 +17,6 @@
   },
   "bin": {
     "web-shellr": "web-shell.js"
-  }
+  },
+  "repository": "git://github.com/nfriedly/web-shell.git"
 }

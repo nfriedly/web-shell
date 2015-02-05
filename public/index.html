@@ -61,7 +61,7 @@
             
             var $output = $('#output');
 
-            var socket = io.connect('//localhost:3000');
+            var socket = io.connect();
 
             ['stdin','stdout','stderr'].forEach(function(type) {
                 socket.on(type, function(data) {
